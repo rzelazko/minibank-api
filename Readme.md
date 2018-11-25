@@ -2,7 +2,7 @@
 
 A simple & lightweight RESTFul API for money transfers between internal accounts (transfer via DB only, no distributed transactions).
 
-Minibank API is a fake-bank application created to learn [Spark Framework](https://github.com/perwendel/spark/).
+Minibank API is a fake-bank application created to learn any micro-framework in this case - [Spark](https://github.com/perwendel/spark/). One of goals is to not use neither [Spring](https://spring.io/) nor [JEE](https://www.oracle.com/technetwork/java/javaee/tech/index.html).
 Technological stack:
 - Java 8
 - [Spark Framework 2.8.0](https://github.com/perwendel/spark/)
