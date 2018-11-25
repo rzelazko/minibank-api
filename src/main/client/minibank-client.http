@@ -1,0 +1,51 @@
+### Create source account
+POST http://{{host}}/api/accounts
+Content-Type: application/json
+
+{
+  "iban": "PL12345678901234567890123456",
+  "currency": "PLN",
+  "balance": 100000
+}
+
+### Create destination account
+POST http://{{host}}/api/accounts
+Content-Type: application/json
+
+{
+  "iban": "PL98765432109876543210987654",
+  "currency": "PLN",
+  "balance": 0
+}
+
+### Get account details
+GET http://{{host}}/api/accounts/PL12345678901234567890123456
+
+### Initialize transfer request
+POST http://{{host}}/api/transfers
+Content-Type: application/json
+
+{
+  "source": "PL12345678901234567890123456",
+  "destination": "PL98765432109876543210987654",
+  "amount": 50000,
+  "currency": "PLN"
+}
+
+> {% client.global.set("accountUuid", response.body.uuid); %}
+
+### Confirm transfer request with SMS code
+PUT http://{{host}}/api/transfers/{{accountUuid}}
+Content-Type: application/json
+
+{
+  "authCode": "123456"
+}
+
+### Get transfer details
+GET http://{{host}}/api/transfers/{{accountUuid}}
+
+### Cancel / delete transfer details
+DELETE http://{{host}}/api/transfers/{{accountUuid}}
+
+###
