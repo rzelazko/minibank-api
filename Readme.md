@@ -2,7 +2,7 @@
 
 A simple & lightweight RESTFul API for money transfers between internal accounts (transfer via DB only, no distributed transactions).
 
-Minibank API is artificial project created to learn [Spark Framework](https://github.com/perwendel/spark/).
+Minibank API is a fake-bank application created to learn [Spark Framework](https://github.com/perwendel/spark/).
 Technological stack:
 - Java 8
 - [Spark Framework 2.8.0](https://github.com/perwendel/spark/)
@@ -184,6 +184,6 @@ Error codes returned in both resources in case of exceptional situations.
 | E0P1 - E0P5 | Request is invalid (ex. JSON invalid, IBAN invalid, etc)                     |
 | E0A1        | Can't create account with IBAN which already exists                          |
 | E0T1        | Transfer issue - insufficient founds                                         |
-| E0T2 - E0T6 | Other transfer issue, description message should tell more                   |  
+| E0T2 - E0T6 | Other transfer issue, returned message contain more details                  |  
 
 
