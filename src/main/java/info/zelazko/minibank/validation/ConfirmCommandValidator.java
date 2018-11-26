@@ -26,8 +26,8 @@ public class ConfirmCommandValidator implements Validable {
         List<Validable> validators = Arrays.asList(
                 new AuthCodeValidator(request.getAuthCode()),
                 new TransferStatusValidator(transfer.getStatus()),
-                new IbanValidator(transfer.getSource(), false, dao),
-                new IbanValidator(transfer.getDestination(), false, dao),
+                new IbanValidator(transfer.getSource()),
+                new IbanValidator(transfer.getDestination()),
                 new CurrencyCodeValidator(transfer.getCurrency().getCurrencyCode()),
                 new TransferAmountValidator(transfer.getAmount()),
                 new TransferSourceAccountValidator(transfer.getSource(), transfer.getAmount(), transfer.getCurrency().getCurrencyCode(), dao),

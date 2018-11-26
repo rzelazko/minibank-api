@@ -1,25 +1,26 @@
 package info.zelazko.minibank.controller;
 
-import info.zelazko.minibank.MinibankApp;
 import info.zelazko.minibank.controller.request.AccountPayload;
 import info.zelazko.minibank.controller.request.ConfirmCommand;
 import info.zelazko.minibank.controller.request.InitializeCommand;
 import info.zelazko.minibank.controller.response.AccountVM;
 import info.zelazko.minibank.controller.response.TransferVM;
-import info.zelazko.minibank.util.Web;
+import info.zelazko.minibank.util.Mapping;
+import info.zelazko.minibank.util.MappingHelper;
+import info.zelazko.minibank.util.SparkRunner;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import spark.Spark;
 
-import static info.zelazko.minibank.util.Web.*;
+import static info.zelazko.minibank.util.SparkRunner.RANDOM_PORT;
 import static io.restassured.RestAssured.given;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 abstract class MinibankIntegrationTest {
     @BeforeAll
     static void beforeAll() {
-        MinibankApp.main(new String[]{"0"});
+        SparkRunner.run(RANDOM_PORT);
         Spark.awaitInitialization();
 
         RestAssured.port = Spark.port();
@@ -39,7 +40,7 @@ abstract class MinibankIntegrationTest {
                 .build();
 
         AccountVM account = given().request().body(payload)
-                .when().post(PATH_API_ACCOUNTS)
+                .when().post(Mapping.PATH_API_ACCOUNTS)
                 .then().statusCode(httpStatus).extract().as(AccountVM.class);
 
         return account;
@@ -47,7 +48,7 @@ abstract class MinibankIntegrationTest {
 
     AccountVM getAccount(String iban) {
         return given().request()
-                .when().get(Web.Path.parse(PATH_API_ACCOUNTS_IBAN, iban))
+                .when().get(MappingHelper.parse(Mapping.PATH_API_ACCOUNTS_IBAN, iban))
                 .then().statusCode(HTTP_OK).extract().as(AccountVM.class);
     }
 
@@ -60,7 +61,7 @@ abstract class MinibankIntegrationTest {
                 .build();
 
         TransferVM transferCreated = given().request().body(payload)
-                .when().post(PATH_API_TRANSFERS)
+                .when().post(Mapping.PATH_API_TRANSFERS)
                 .then().statusCode(httpStatus).extract().as(TransferVM.class);
 
         return transferCreated;
@@ -70,19 +71,19 @@ abstract class MinibankIntegrationTest {
         ConfirmCommand payload = new ConfirmCommand(authCode);
 
         return given().request().body(payload)
-                .when().put(Path.parse(PATH_API_TRANSFERS_UUID, uuid))
+                .when().put(MappingHelper.parse(Mapping.PATH_API_TRANSFERS_UUID, uuid))
                 .then().statusCode(httpStatus).extract().as(TransferVM.class);
     }
 
     TransferVM getTransfer(String uuid) {
         return given().request()
-                .when().get(Web.Path.parse(PATH_API_TRANSFERS_UUID, uuid))
+                .when().get(MappingHelper.parse(Mapping.PATH_API_TRANSFERS_UUID, uuid))
                 .then().statusCode(HTTP_OK).extract().as(TransferVM.class);
     }
 
     TransferVM deleteTransfer(String uuid, int httpStatus) {
         return given().request()
-                .when().delete(Web.Path.parse(PATH_API_TRANSFERS_UUID, uuid))
+                .when().delete(MappingHelper.parse(Mapping.PATH_API_TRANSFERS_UUID, uuid))
                 .then().statusCode(httpStatus).extract().as(TransferVM.class);
     }
 }

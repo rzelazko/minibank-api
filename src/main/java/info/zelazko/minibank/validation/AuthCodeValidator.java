@@ -9,6 +9,9 @@ import static info.zelazko.minibank.util.ErrorMessages.ERROR_MSG_INVALID_AUTH_CO
 
 @Value
 public class AuthCodeValidator implements Validable {
+    /**
+     * This is fake project - so valid SMS authorization code is hardcoded.
+     */
     private final static String VALID_AUTH_CODE = "123456";
 
     private final String authCode;

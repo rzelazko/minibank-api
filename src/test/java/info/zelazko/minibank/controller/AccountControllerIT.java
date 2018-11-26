@@ -2,7 +2,8 @@ package info.zelazko.minibank.controller;
 
 import info.zelazko.minibank.controller.request.AccountPayload;
 import info.zelazko.minibank.controller.response.AccountVM;
-import info.zelazko.minibank.util.Web;
+import info.zelazko.minibank.util.Mapping;
+import info.zelazko.minibank.util.MappingHelper;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -35,13 +36,13 @@ class AccountControllerIT extends MinibankIntegrationTest {
     void getAccountInvalid() {
         // when
         AccountVM accountRead = given().request()
-                .when().get(Web.Path.parse(Web.PATH_API_ACCOUNTS_IBAN, IBAN_INVALID))
-                .then().statusCode(HTTP_NOT_FOUND).extract().as(AccountVM.class);
+                .when().get(MappingHelper.parse(Mapping.PATH_API_ACCOUNTS_IBAN, IBAN_INVALID))
+                .then().statusCode(HTTP_BAD_REQUEST).extract().as(AccountVM.class);
 
         // then
         assertNotNull(accountRead.getError());
-        assertEquals(ERROR_CODE_ACCOUNT_NOT_FOUND, accountRead.getError().getCode());
-        assertEquals(String.format(ERROR_MSG_ACCOUNT_NOT_FOUND, IBAN_INVALID), accountRead.getError().getMessage());
+        assertEquals(ERROR_CODE_INVALID_IBAN, accountRead.getError().getCode());
+        assertEquals(String.format(ERROR_MSG_INVALID_IBAN, IBAN_INVALID), accountRead.getError().getMessage());
     }
 
     @Test
@@ -67,7 +68,7 @@ class AccountControllerIT extends MinibankIntegrationTest {
 
         // when
         AccountVM accountCreated2 = given().request().body(payload)
-                .when().post(Web.PATH_API_ACCOUNTS)
+                .when().post(Mapping.PATH_API_ACCOUNTS)
                 .then().statusCode(HTTP_BAD_REQUEST).extract().as(AccountVM.class);
 
         // then

@@ -1,14 +1,13 @@
 package info.zelazko.minibank.service;
 
+import info.zelazko.minibank.controller.request.ConfirmCommand;
+import info.zelazko.minibank.controller.request.InitializeCommand;
+import info.zelazko.minibank.exception.validation.ResourceNotFoundException;
 import info.zelazko.minibank.persistance.MinibankDao;
 import info.zelazko.minibank.persistance.model.Transfer;
-import info.zelazko.minibank.exception.validation.ResourceNotFoundException;
-import info.zelazko.minibank.controller.request.ConfirmCommand;
 import info.zelazko.minibank.validation.ConfirmCommandValidator;
-import info.zelazko.minibank.controller.request.InitializeCommand;
 import info.zelazko.minibank.validation.DeleteTransferValidator;
 import info.zelazko.minibank.validation.InitializeCommandValidator;
-import info.zelazko.minibank.validation.Validable;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Currency;
@@ -27,8 +26,7 @@ public class TransferService {
     }
 
     public Transfer initialize(InitializeCommand initializeCommand) {
-        Validable requestValidator = new InitializeCommandValidator(initializeCommand, minibankDao);
-        requestValidator.validate();
+        new InitializeCommandValidator(initializeCommand, minibankDao).validate();
 
         Transfer transfer = Transfer.builder()
                 .uuid(UUID.randomUUID().toString())
@@ -44,18 +42,14 @@ public class TransferService {
 
     public Transfer confirm(String uuid, ConfirmCommand confirmCommand) {
         Transfer transfer = getTransfer(uuid);
-
-        Validable requestValidator = new ConfirmCommandValidator(confirmCommand, transfer, minibankDao);
-        requestValidator.validate();
+        new ConfirmCommandValidator(confirmCommand, transfer, minibankDao).validate();
 
         return minibankDao.confirmTransfer(transfer);
     }
 
     public Transfer delete(String uuid) {
         Transfer transfer = getTransfer(uuid);
-
-        Validable requestValidator = new DeleteTransferValidator(transfer);
-        requestValidator.validate();
+        new DeleteTransferValidator(transfer).validate();
 
         return minibankDao.deleteTransfer(transfer.getUuid());
     }

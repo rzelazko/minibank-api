@@ -16,17 +16,13 @@ public class MinibankDaoInMemory implements MinibankDao {
 
     @Override
     public Optional<Account> findAccountByIban(String iban) {
-        if (StringUtils.isBlank(iban)) {
-            throw new IllegalArgumentException();
-        }
+        Optional.ofNullable(iban).orElseThrow(IllegalArgumentException::new);
         return Optional.ofNullable(accounts.get(iban));
     }
 
     @Override
     public Account createAccount(Account account) {
-        if (account == null) {
-            throw new IllegalArgumentException();
-        }
+        Optional.ofNullable(account).orElseThrow(IllegalArgumentException::new);
         accounts.put(account.getIban(), account);
 
         return account;
@@ -34,10 +30,8 @@ public class MinibankDaoInMemory implements MinibankDao {
 
     @Override
     public Account updateAccountBalance(String iban, int newBalance) {
-        if (StringUtils.isBlank(iban)) {
-            throw new IllegalArgumentException();
-        }
-        Account originalAccount = Optional.ofNullable(accounts.get(iban)).orElseThrow(() -> new DaoException());
+        Optional.ofNullable(iban).orElseThrow(IllegalArgumentException::new);
+        Account originalAccount = Optional.ofNullable(accounts.get(iban)).orElseThrow(DaoException::new);
         Account newAccount = Account.builder()
                 .currency(originalAccount.getCurrency())
                 .iban(originalAccount.getIban())
@@ -50,17 +44,13 @@ public class MinibankDaoInMemory implements MinibankDao {
 
     @Override
     public Optional<Transfer> findTransferByUuid(String uuid) {
-        if (StringUtils.isBlank(uuid)) {
-            throw new IllegalArgumentException();
-        }
+        Optional.ofNullable(uuid).orElseThrow(IllegalArgumentException::new);
         return Optional.ofNullable(transfers.get(uuid));
     }
 
     @Override
     public Transfer createTransfer(Transfer transfer) {
-        if (transfer == null) {
-            throw new IllegalArgumentException();
-        }
+        Optional.ofNullable(transfer).orElseThrow(IllegalArgumentException::new);
         transfers.put(transfer.getUuid(), transfer);
 
         return transfer;
@@ -68,13 +58,11 @@ public class MinibankDaoInMemory implements MinibankDao {
 
     @Override
     public Transfer confirmTransfer(Transfer transferRequest) {
-        if (transferRequest == null) {
-            throw new IllegalArgumentException();
-        }
+        Optional.ofNullable(transferRequest).orElseThrow(IllegalArgumentException::new);
 
         Transfer transfer = transfers.get(transferRequest.getUuid());
-        Account source = findAccountByIban(transferRequest.getSource()).orElseThrow(() -> new DaoException());
-        Account destination = findAccountByIban(transferRequest.getDestination()).orElseThrow(() -> new DaoException());
+        Account source = findAccountByIban(transferRequest.getSource()).orElseThrow(DaoException::new);
+        Account destination = findAccountByIban(transferRequest.getDestination()).orElseThrow(DaoException::new);
 
         try {
             if (!transferRequest.getCurrency().equals(source.getCurrency()) || !transferRequest.getCurrency().equals(destination.getCurrency())) {
@@ -101,11 +89,9 @@ public class MinibankDaoInMemory implements MinibankDao {
 
     @Override
     public Transfer deleteTransfer(String uuid) {
-        if (StringUtils.isBlank(uuid)) {
-            throw new IllegalArgumentException();
-        }
+        Optional.ofNullable(uuid).orElseThrow(IllegalArgumentException::new);
 
-        Transfer transfer = findTransferByUuid(uuid).orElseThrow(() -> new DaoException());
+        Transfer transfer = findTransferByUuid(uuid).orElseThrow(DaoException::new);
         transfers.remove(transfer.getUuid());
 
         return transfer;
@@ -113,10 +99,8 @@ public class MinibankDaoInMemory implements MinibankDao {
 
     @Override
     public Transfer updateTransferStatus(String uuid, Transfer.Status newStatus) {
-        if (StringUtils.isBlank(uuid)) {
-            throw new IllegalArgumentException();
-        }
-        Transfer originalTransfer = Optional.ofNullable(transfers.get(uuid)).orElseThrow(() -> new DaoException());
+        Optional.ofNullable(uuid).orElseThrow(IllegalArgumentException::new);
+        Transfer originalTransfer = Optional.ofNullable(transfers.get(uuid)).orElseThrow(DaoException::new);
         Transfer newTransfer = Transfer.builder()
                 .uuid(uuid)
                 .status(newStatus)

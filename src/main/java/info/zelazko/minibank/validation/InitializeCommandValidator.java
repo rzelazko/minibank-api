@@ -22,8 +22,8 @@ public class InitializeCommandValidator implements Validable {
         Optional.ofNullable(request).orElseThrow(() -> new ValidationException(ERROR_MSG_EMPTY_REQUEST, ERROR_CODE_EMPTY_REQUEST));
 
         List<Validable> validators = Arrays.asList(
-                new IbanValidator(request.getSource(), false, dao),
-                new IbanValidator(request.getDestination(), false, dao),
+                new IbanValidator(request.getSource()),
+                new IbanValidator(request.getDestination()),
                 new CurrencyCodeValidator(request.getCurrency()),
                 new TransferAmountValidator(request.getAmount()),
                 new TransferSourceAccountValidator(request.getSource(), request.getAmount(), request.getCurrency(), dao),
