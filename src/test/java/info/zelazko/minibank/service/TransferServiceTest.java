@@ -4,13 +4,14 @@ import info.zelazko.minibank.controller.request.ConfirmCommand;
 import info.zelazko.minibank.controller.request.InitializeCommand;
 import info.zelazko.minibank.exception.validation.ResourceNotFoundException;
 import info.zelazko.minibank.exception.validation.ValidationException;
+import info.zelazko.minibank.persistance.MinibankDao;
 import info.zelazko.minibank.persistance.model.Account;
 import info.zelazko.minibank.persistance.model.Transfer;
-import info.zelazko.minibank.persistance.MinibankDao;
 import info.zelazko.minibank.service.helper.ConfirmTransferProvider;
 import info.zelazko.minibank.service.helper.InitializeTransferProvider;
 import info.zelazko.minibank.service.helper.MockBuilder;
 import info.zelazko.minibank.service.helper.MockValue;
+import info.zelazko.minibank.util.MinibankError;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,12 +20,8 @@ import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.util.Optional;
 
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_DEL_NONINITIALIZED;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_TRANSFER_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class TransferServiceTest {
@@ -61,7 +58,7 @@ class TransferServiceTest {
                 () -> transferService.getTransfer(MockValue.UUID1));
 
         // then
-        assertEquals(ERROR_CODE_TRANSFER_NOT_FOUND, exception.getCode());
+        assertEquals(MinibankError.TRANSFER_NOT_FOUND.getCode(), exception.getCode());
     }
 
     @Test
@@ -92,7 +89,7 @@ class TransferServiceTest {
     @DisplayName("initializeTransfer Validation")
     @ParameterizedTest(name = "Scenario: {0}, expected {1}")
     @ArgumentsSource(InitializeTransferProvider.class)
-    void initializeTransferValidationException(String scenario, String errorCode, Optional<Account> sourceAccount,
+    void initializeTransferValidationException(String scenario, MinibankError error, Optional<Account> sourceAccount,
                                                Optional<Account> destinationAccount, InitializeCommand initializeCommand) {
         // given - initializeCommand & sourceAccount & destinationAccount
         sourceAccount.ifPresent(account -> when(minibankDao.findAccountByIban(eq(account.getIban()))).thenReturn(sourceAccount));
@@ -104,7 +101,7 @@ class TransferServiceTest {
                 () -> transferService.initialize(initializeCommand));
 
         // then
-        assertEquals(errorCode, exception.getCode());
+        assertEquals(error.getCode(), exception.getCode());
     }
 
     @Test
@@ -130,7 +127,7 @@ class TransferServiceTest {
     @DisplayName("confirmTransfer Validation")
     @ParameterizedTest(name = "Scenario: {0}, expected {1}")
     @ArgumentsSource(ConfirmTransferProvider.class)
-    void confirmTransferValidationException(String scenario, String errorCode, String uuid, Optional<Account> sourceAccount,
+    void confirmTransferValidationException(String scenario, MinibankError error, String uuid, Optional<Account> sourceAccount,
                                             Optional<Account> destinationAccount, Optional<Transfer> transfer, ConfirmCommand confirmCommand) {
         // given
         sourceAccount.ifPresent(account -> when(minibankDao.findAccountByIban(eq(account.getIban()))).thenReturn(sourceAccount));
@@ -144,7 +141,7 @@ class TransferServiceTest {
 
         // then
         verify(minibankDao, never()).confirmTransfer(any(Transfer.class));
-        assertEquals(errorCode, exception.getCode());
+        assertEquals(error.getCode(), exception.getCode());
     }
 
     @Test
@@ -174,7 +171,7 @@ class TransferServiceTest {
 
         // then
         verify(minibankDao, never()).deleteTransfer(anyString());
-        assertEquals(ERROR_CODE_TRANSFER_NOT_FOUND, exception.getCode());
+        assertEquals(MinibankError.TRANSFER_NOT_FOUND.getCode(), exception.getCode());
     }
 
     @Test
@@ -190,9 +187,7 @@ class TransferServiceTest {
 
         // then
         verify(minibankDao, never()).deleteTransfer(anyString());
-        assertEquals(ERROR_CODE_DEL_NONINITIALIZED, exception.getCode());
+        assertEquals(MinibankError.DEL_NONINITIALIZED.getCode(), exception.getCode());
     }
-
-    // TODO https://www.javacodegeeks.com/2015/01/separating-integration-tests-from-unit-tests-using-maven-failsafe-junit-category.html (add in readme)
 
 }

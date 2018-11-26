@@ -5,6 +5,7 @@ import info.zelazko.minibank.controller.request.InitializeCommand;
 import info.zelazko.minibank.exception.validation.ResourceNotFoundException;
 import info.zelazko.minibank.persistance.MinibankDao;
 import info.zelazko.minibank.persistance.model.Transfer;
+import info.zelazko.minibank.util.MinibankError;
 import info.zelazko.minibank.validation.ConfirmCommandValidator;
 import info.zelazko.minibank.validation.DeleteTransferValidator;
 import info.zelazko.minibank.validation.InitializeCommandValidator;
@@ -13,16 +14,13 @@ import lombok.RequiredArgsConstructor;
 import java.util.Currency;
 import java.util.UUID;
 
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_TRANSFER_NOT_FOUND;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_MSG_TRANSFER_NOT_FOUND;
-
 @RequiredArgsConstructor
 public class TransferService {
     private final MinibankDao minibankDao;
 
     public Transfer getTransfer(String uuid) {
         return minibankDao.findTransferByUuid(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException(ERROR_MSG_TRANSFER_NOT_FOUND, ERROR_CODE_TRANSFER_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(MinibankError.TRANSFER_NOT_FOUND));
     }
 
     public Transfer initialize(InitializeCommand initializeCommand) {

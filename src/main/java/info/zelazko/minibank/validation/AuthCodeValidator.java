@@ -1,11 +1,9 @@
 package info.zelazko.minibank.validation;
 
 import info.zelazko.minibank.exception.validation.ValidationException;
+import info.zelazko.minibank.util.MinibankError;
 import lombok.Value;
 import spark.utils.StringUtils;
-
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_INVALID_AUTH_CODE;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_MSG_INVALID_AUTH_CODE;
 
 @Value
 public class AuthCodeValidator implements Validable {
@@ -19,7 +17,7 @@ public class AuthCodeValidator implements Validable {
     @Override
     public void validate() {
         if (StringUtils.isEmpty(authCode) || !VALID_AUTH_CODE.equalsIgnoreCase(authCode)) {
-            throw new ValidationException(ERROR_MSG_INVALID_AUTH_CODE, ERROR_CODE_INVALID_AUTH_CODE);
+            throw new ValidationException(MinibankError.INVALID_AUTH_CODE);
         }
     }
 }

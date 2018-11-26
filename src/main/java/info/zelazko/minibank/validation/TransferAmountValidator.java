@@ -1,10 +1,8 @@
 package info.zelazko.minibank.validation;
 
 import info.zelazko.minibank.exception.validation.ValidationException;
+import info.zelazko.minibank.util.MinibankError;
 import lombok.Value;
-
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_INVALID_AMOUNT;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_MSG_INVALID_AMOUNT;
 
 @Value
 public class TransferAmountValidator implements Validable {
@@ -15,7 +13,7 @@ public class TransferAmountValidator implements Validable {
     @Override
     public void validate() {
         if (amount < MIN_AMOUNT) {
-            throw new ValidationException(ERROR_MSG_INVALID_AMOUNT, ERROR_CODE_INVALID_AMOUNT);
+            throw new ValidationException(MinibankError.INVALID_AMOUNT);
         }
     }
 }

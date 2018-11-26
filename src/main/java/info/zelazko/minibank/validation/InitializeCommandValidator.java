@@ -3,14 +3,12 @@ package info.zelazko.minibank.validation;
 import info.zelazko.minibank.controller.request.InitializeCommand;
 import info.zelazko.minibank.exception.validation.ValidationException;
 import info.zelazko.minibank.persistance.MinibankDao;
+import info.zelazko.minibank.util.MinibankError;
 import lombok.Value;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_EMPTY_REQUEST;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_MSG_EMPTY_REQUEST;
 
 @Value
 public class InitializeCommandValidator implements Validable {
@@ -19,7 +17,7 @@ public class InitializeCommandValidator implements Validable {
 
     @Override
     public void validate() {
-        Optional.ofNullable(request).orElseThrow(() -> new ValidationException(ERROR_MSG_EMPTY_REQUEST, ERROR_CODE_EMPTY_REQUEST));
+        Optional.ofNullable(request).orElseThrow(() -> new ValidationException(MinibankError.EMPTY_REQUEST));
 
         List<Validable> validators = Arrays.asList(
                 new IbanValidator(request.getSource()),

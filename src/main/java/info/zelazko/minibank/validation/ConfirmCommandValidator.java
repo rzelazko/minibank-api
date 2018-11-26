@@ -4,14 +4,12 @@ import info.zelazko.minibank.controller.request.ConfirmCommand;
 import info.zelazko.minibank.exception.validation.ValidationException;
 import info.zelazko.minibank.persistance.MinibankDao;
 import info.zelazko.minibank.persistance.model.Transfer;
+import info.zelazko.minibank.util.MinibankError;
 import lombok.Value;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_EMPTY_REQUEST;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_MSG_EMPTY_REQUEST;
 
 @Value
 public class ConfirmCommandValidator implements Validable {
@@ -21,7 +19,7 @@ public class ConfirmCommandValidator implements Validable {
 
     @Override
     public void validate() {
-        Optional.ofNullable(request).orElseThrow(() -> new ValidationException(ERROR_MSG_EMPTY_REQUEST, ERROR_CODE_EMPTY_REQUEST));
+        Optional.ofNullable(request).orElseThrow(() -> new ValidationException(MinibankError.EMPTY_REQUEST));
 
         List<Validable> validators = Arrays.asList(
                 new AuthCodeValidator(request.getAuthCode()),

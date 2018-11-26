@@ -1,7 +1,9 @@
 package info.zelazko.minibank.exception.validation;
 
+import info.zelazko.minibank.util.MinibankError;
+
 public class TransferStateInvalidException extends ValidationException {
-    public TransferStateInvalidException(String message, String code) {
-        super(message, code);
+    public TransferStateInvalidException(MinibankError error) {
+        super(error);
     }
 }

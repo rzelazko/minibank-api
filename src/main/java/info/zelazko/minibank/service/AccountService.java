@@ -4,14 +4,12 @@ import info.zelazko.minibank.controller.request.AccountPayload;
 import info.zelazko.minibank.exception.validation.ResourceNotFoundException;
 import info.zelazko.minibank.persistance.MinibankDao;
 import info.zelazko.minibank.persistance.model.Account;
+import info.zelazko.minibank.util.MinibankError;
 import info.zelazko.minibank.validation.AccountPayloadValidator;
 import info.zelazko.minibank.validation.IbanValidator;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Currency;
-
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_ACCOUNT_NOT_FOUND;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_MSG_ACCOUNT_NOT_FOUND;
 
 @RequiredArgsConstructor
 public class AccountService {
@@ -21,8 +19,7 @@ public class AccountService {
         new IbanValidator(iban).validate();
 
         return minibankDao.findAccountByIban(iban)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format(ERROR_MSG_ACCOUNT_NOT_FOUND, iban), ERROR_CODE_ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new ResourceNotFoundException(MinibankError.ACCOUNT_NOT_FOUND, iban));
     }
 
     public Account createAccount(AccountPayload accountPayload) {

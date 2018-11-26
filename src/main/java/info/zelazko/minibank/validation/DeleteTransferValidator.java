@@ -2,10 +2,8 @@ package info.zelazko.minibank.validation;
 
 import info.zelazko.minibank.exception.validation.ValidationException;
 import info.zelazko.minibank.persistance.model.Transfer;
+import info.zelazko.minibank.util.MinibankError;
 import lombok.Value;
-
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_DEL_NONINITIALIZED;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_MSG_DEL_NONINITIALIZED;
 
 @Value
 public class DeleteTransferValidator implements Validable {
@@ -14,7 +12,7 @@ public class DeleteTransferValidator implements Validable {
     @Override
     public void validate() {
         if (!Transfer.Status.INITIALIZED.equals(transfer.getStatus())) {
-            throw new ValidationException(ERROR_MSG_DEL_NONINITIALIZED, ERROR_CODE_DEL_NONINITIALIZED);
+            throw new ValidationException(MinibankError.DEL_NONINITIALIZED);
         }
     }
 }

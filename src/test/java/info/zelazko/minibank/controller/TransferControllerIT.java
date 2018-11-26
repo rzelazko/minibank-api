@@ -3,12 +3,11 @@ package info.zelazko.minibank.controller;
 import info.zelazko.minibank.controller.response.AccountVM;
 import info.zelazko.minibank.controller.response.TransferVM;
 import info.zelazko.minibank.persistance.model.Transfer;
+import info.zelazko.minibank.util.MinibankError;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static info.zelazko.minibank.service.helper.MockValue.*;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_CODE_INVALID_BALANCE;
-import static info.zelazko.minibank.util.ErrorMessages.ERROR_MSG_INVALID_BALANCE;
 import static java.net.HttpURLConnection.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -158,8 +157,8 @@ public class TransferControllerIT extends MinibankIntegrationTest {
 
         // then
         assertNotNull(transferInit.getError());
-        assertEquals(ERROR_CODE_INVALID_BALANCE, transferInit.getError().getCode());
-        assertEquals(ERROR_MSG_INVALID_BALANCE, transferInit.getError().getMessage());
+        assertEquals(MinibankError.INVALID_BALANCE.getCode(), transferInit.getError().getCode());
+        assertEquals(MinibankError.INVALID_BALANCE.getMessage(), transferInit.getError().getMessage());
         assertEquals(AMOUNT_500, source.getBalance());
         assertEquals(AMOUNT_0, destination.getBalance());
     }

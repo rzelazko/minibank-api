@@ -1,7 +1,7 @@
 package info.zelazko.minibank.validation;
 
 import info.zelazko.minibank.exception.validation.ValidationException;
-import info.zelazko.minibank.util.ErrorMessages;
+import info.zelazko.minibank.util.MinibankError;
 import lombok.Value;
 import spark.utils.StringUtils;
 
@@ -14,9 +14,7 @@ public class CurrencyCodeValidator implements Validable {
     @Override
     public void validate() {
         if (StringUtils.isEmpty(currencyCode) || currencyCode.length() != CURRENCY_CODE_LENGTH) {
-            throw new ValidationException(
-                    String.format(ErrorMessages.ERROR_MSG_INVALID_CURRENCY, currencyCode),
-                    ErrorMessages.ERROR_CODE_INVALID_CURRENCY);
+            throw new ValidationException(MinibankError.INVALID_CURRENCY, currencyCode);
         }
     }
 }
